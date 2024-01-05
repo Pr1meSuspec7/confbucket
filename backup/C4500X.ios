@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 5751 bytes
+Current configuration : 5786 bytes
 !
-! Last configuration change at 18:50:05 CET Fri Jan 5 2024 by palmierimarc
+! Last configuration change at 18:52:26 CET Fri Jan 5 2024 by palmierimarc
 !
 version 15.2
 service timestamps debug datetime msec
@@ -121,6 +121,9 @@ vlan 821
 !
 vlan 822
  name INTRA-esemicl1ora
+!
+vlan 823
+ name INTRA-esemicl2ora
 !
 vlan 903
  name DRF-TRN-FW
