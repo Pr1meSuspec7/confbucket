@@ -1,0 +1,75 @@
+---
+# Leave blank "username/password" to use credentials.yaml file
+# If you want to override global credentials set "username/password" on device
+#
+# For device_type supported view "SSH-device_type-supported.yaml" file
+
+# - host: "LTM-Milano1"
+#   device_type: "f5_tmsh"
+#   ip: "10.39.202.58"
+#   username:
+#   password:
+#
+# - host: "MSG-111-C9K-OFFICE"
+#   device_type: "cisco_ios"
+#   ip: "10.25.111.183"
+#   username:
+#   password:
+#
+# - host: "MSG-MAR-EXT-N9K"
+#   device_type: "cisco_nxos"
+#   ip: "10.213.111.31"
+#   username:
+#   password:
+#
+# - host: "RM-B2-ASR9K-01"
+#   device_type: "cisco_xr"
+#   ip: "10.207.112.130"
+#   username:
+#   password:
+#
+# - host: "MSG-TER-EXT-N9K"
+#   device_type: "cisco_nxos"
+#   ip: "10.213.111.32"
+#   username:
+#   password:
+#
+# - host: "MSG-AS-QFX12-1"
+#   device_type: "juniper_junos"
+#   ip: "10.39.11.9"
+#   username:
+#   password:
+
+
+## LAB ##
+
+- host: "COREDC"
+  device_type: "cisco_nxos"
+  ip: "192.168.178.51"
+  username:
+  password:
+
+- host: "C4500X"
+  device_type: "cisco_ios"
+  ip: "192.168.178.53"
+  username:
+  password:
+
+- host: "ASR9K-01"
+  device_type: "cisco_xr"
+  ip: "192.168.178.55"
+  username:
+  password:
+
+# Simulate errors
+- host: "SW-BROKEN-1"
+  device_type: "cisco_ciccio"
+  ip: "192.168.178.52"
+  username:
+  password:
+
+- host: "SW-BROKEN-2"
+  device_type: "cisco_nxos"
+  ip: "192.168.178.54"
+  username:
+  password:
