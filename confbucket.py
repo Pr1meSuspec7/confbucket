@@ -121,6 +121,7 @@ def load_git_info(folder):
         repo_token = credentials.get("GIT_TOKEN")
         repo_folder = "."
         repo = Repo(repo_folder)
+        # if you want to use https token invert following commented lines
         # repo_url = repo.remotes.origin.url.split("https://")[1]
         # repo_token_url = "https://" + repo_token + "@github.com/" + repo_url
         repo_token_url = repo.remotes.origin.url
