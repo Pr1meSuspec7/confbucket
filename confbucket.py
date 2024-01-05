@@ -123,7 +123,7 @@ def load_git_info(folder):
         repo = Repo(repo_folder)
         # repo_url = repo.remotes.origin.url.split("https://")[1]
         repo_url = repo.remotes.origin.url.split("git@github.com:")[1]
-        repo_token_url = "https://github.com" + repo_token + "@" + repo_url
+        repo_token_url = "https://" + repo_token + "@github.com/" + repo_url
         # repo_token_url = repo.remotes.origin.url
     else:
         pass
