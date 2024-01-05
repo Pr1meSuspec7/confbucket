@@ -1,0 +1,6 @@
+COREDC: OK
+C4500X: OK
+ASR9K-01: OK
+SW-BROKEN-1: ERROR [device_type not supported]
+SW-BROKEN-2: ERROR [Authentication failed or device unreachable]
+SW-BROKEN-2: ERROR [Authentication failed or device unreachable]

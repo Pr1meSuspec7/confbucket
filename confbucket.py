@@ -129,7 +129,8 @@ def load_git_info(folder):
         pass
 
 
-def git_push(local_repo, msg, repourl_w_token):
+# def git_push(local_repo, msg, repourl_w_token):
+def git_push(local_repo, msg):
     """function to push new config files on remote repo"""
     try:
         local_repo.git.add(".")
@@ -315,6 +316,6 @@ print("\n")
 # connect to the device w/ netmiko
 if credentials.get("GIT_TOKEN") != "" and os.path.isdir(".git"):
     print("Pushing on git repo...")
-    git_push(repo, commit_message, repo_token_url)
+    git_push(repo, commit_message)
 else:
     pass

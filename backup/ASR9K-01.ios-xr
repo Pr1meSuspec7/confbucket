@@ -1,0 +1,271 @@
+!! IOS XR Configuration 6.1.3
+!! Last configuration change at Fri Jan  5 09:55:22 2024 by palmierimarc
+!
+hostname ASR9K-01
+banner motd ^
+         <<Mi raccomando, non dobbiamo sporcare....>>
+         _____    /
+        /  _/\\  /
+        | / oo
+        \(   _\
+         \  O/
+         /   \
+         ||  ||
+         ||  ||      <<OhmmmmmmKmm...>>
+         ||  || _____ /
+         | \ ||(___  )
+        // / \|_)o (  )
+        \\ ///|)\_(    )
+         ||   |\ )(    )
+         ||   ) \/(____)_     ___
+         ||   |\___/     `---' `.`.
+         ||   | :   _       .'   ))
+         ||   | `..' `~~~-.'   .'__ _
+         \\  /           '.______  ( (
+         ((___ooO       
+^
+domain name sky.local
+aaa accounting exec default start-stop none
+aaa accounting commands default start-stop none
+aaa authorization exec default none
+aaa authentication login default local
+vrf IPN
+ address-family ipv4 unicast
+ !
+!
+vrf CORE-DC
+ address-family ipv4 unicast
+ !
+!
+line template itnet
+ exec-timeout 0 0
+ transport input all
+ transport output all
+!
+line default
+ accounting exec default
+ accounting commands default
+ authorization exec default
+ login authentication default
+!
+vty-pool default 0 4 line-template itnet
+interface MgmtEth0/0/CPU0/0
+ ipv4 address 192.168.178.55 255.255.255.0
+!
+interface GigabitEthernet0/0/0/0
+ shutdown
+!
+interface GigabitEthernet0/0/0/1
+ shutdown
+!
+interface GigabitEthernet0/0/0/2
+ shutdown
+!
+prefix-set CONNECTED
+  10.207.112.130,
+  10.207.114.8/30,
+  10.207.114.32/28,
+  10.207.114.224/30,
+  10.207.114.228/30,
+  10.207.114.236/30,
+  10.207.114.244/30,
+  10.255.9.112/29
+end-set
+!
+prefix-set DEFAULT-ONLY
+  0.0.0.0/0
+end-set
+!
+prefix-set STATIC-to-BRO
+  172.30.0.0/16
+end-set
+!
+prefix-set STATIC-to-TECH
+  10.117.192.0/18
+end-set
+!
+as-path-set ASN-ACI-FABRIC
+  originates-from '65191'
+end-set
+!
+community-set COMM-ACI-POD3
+  # Community that identify ACI POD 3
+  65191:3
+end-set
+!
+community-set COMM-OFFICE-RM
+  # Community that identify ROMA OFFICE
+  42035:1
+end-set
+!
+route-policy PASS-ALL
+  pass
+end-policy
+!
+route-policy PASS-to-PE
+  # Community that identify ACI POD 3
+  if community matches-every COMM-ACI-POD3 then
+    pass
+    # prefix that identify Broadcast static route
+  elseif destination in STATIC-to-BRO then
+    pass
+    #connected routes
+  elseif destination in CONNECTED then
+    pass
+    # Community that identify OFFICE-RM
+  elseif community matches-every COMM-OFFICE-RM then
+    pass
+  endif
+end-policy
+!
+route-policy PASS-ACI-NET
+  if as-path in ASN-ACI-FABRIC then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy PASS-DEFAULT
+  if destination in DEFAULT-ONLY then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+route-policy PASS-ACI-COMM
+  if community matches-every COMM-ACI-POD3 then
+    pass
+  else
+    drop
+  endif
+end-policy
+!
+router bgp 4203000210
+ bgp router-id 10.207.112.130
+ bgp graceful-restart
+ bgp log neighbor changes detail
+ address-family ipv4 unicast
+ !
+ address-family vpnv4 unicast
+ !
+ vrf CORE-DC
+  rd 4203000210:1
+  address-family ipv4 unicast
+   maximum-paths eibgp 4 selective
+   redistribute connected
+   redistribute static
+  !
+  neighbor 10.207.114.10
+   remote-as 4203000210
+   address-family ipv4 unicast
+    route-policy PASS-ALL in
+    route-policy PASS-ALL out
+    next-hop-self
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.254.62
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.254.70
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.254.78
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.114.122
+   remote-as 4203500001
+   address-family ipv4 unicast
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.114.206
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.114.214
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.114.217
+   remote-as 65000
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-to-PE out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.114.221
+   remote-as 65000
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-to-PE out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.114.242
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+  neighbor 10.207.114.254
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
+  !
+ !
+!
+ssh server v2
+end
+
