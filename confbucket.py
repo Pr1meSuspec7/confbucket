@@ -121,8 +121,10 @@ def load_git_info(folder):
         repo_token = credentials.get("GIT_TOKEN")
         repo_folder = "."
         repo = Repo(repo_folder)
-        repo_url = repo.remotes.origin.url.split("https://")[1]
-        repo_token_url = "https://" + repo_token + "@" + repo_url
+        # repo_url = repo.remotes.origin.url.split("https://")[1]
+        # repo_url = repo.remotes.origin.url.split("git@github.com:")[1]
+        # repo_token_url = "https://" + repo_token + "@" + repo_url
+        # repo_token_url = repo.remotes.origin.url
     else:
         pass
 
@@ -132,7 +134,8 @@ def git_push(local_repo, msg, repourl_w_token):
     try:
         local_repo.git.add(".")
         local_repo.git.commit(m=msg)
-        local_repo.git.push(repourl_w_token)
+        # local_repo.git.push(repourl_w_token)
+        local_repo.git.push
         print("Committed")
     except GitCommandError:
         print("nothing to commit, working tree clean")
@@ -311,7 +314,7 @@ print("\n")
 
 # connect to the device w/ netmiko
 if credentials.get("GIT_TOKEN") != "" and os.path.isdir(".git"):
-    print('Pushing on git repo...')
+    print("Pushing on git repo...")
     git_push(repo, commit_message, repo_token_url)
 else:
     pass
