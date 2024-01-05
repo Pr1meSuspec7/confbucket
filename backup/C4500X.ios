@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 5725 bytes
+Current configuration : 5751 bytes
 !
-! Last configuration change at 18:34:14 CET Fri Jan 5 2024 by palmierimarc
+! Last configuration change at 18:50:05 CET Fri Jan 5 2024 by palmierimarc
 !
 version 15.2
 service timestamps debug datetime msec
@@ -107,7 +107,8 @@ vlan 595
 vlan 599
  name Transit_UK_Storm_Lab
 !
-vlan 600 
+vlan 600
+ name TRN-FW-OUTSIDE-CIPPA
 !
 vlan 715
  name VIPRIOPN-SEC-to-SRX_CDN_POLKA
