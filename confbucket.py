@@ -137,13 +137,13 @@ def git_push(local_repo, msg, repourl_w_token):
         local_repo.git.commit(m=msg)
         local_repo.git.push(repourl_w_token)
         # local_repo.git.push
-        print("Committed")
+        colored_green("Committed")
     except GitCommandError:
         print("nothing to commit, working tree clean")
     except Exception as e:
         # decomment to debug
         # print(e)
-        print("Some error occured while pushing the code")
+        colored_red("Some error occured while pushing the code")
 
 
 ### Backup functions ###
@@ -315,7 +315,9 @@ print("\n")
 
 # connect to the device w/ netmiko
 if credentials.get("GIT_TOKEN") != "" and os.path.isdir(".git"):
-    print("Pushing on git repo...")
+    colored_yellow("Working on git repo...")
     git_push(repo, commit_message, repo_token_url)
 else:
     pass
+
+print("\n")
