@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 6271 bytes
+Current configuration : 6082 bytes
 !
-! Last configuration change at 10:31:25 CET Mon Jan 8 2024 by palmierimarc
+! Last configuration change at 12:19:32 CET Mon Jan 8 2024 by palmierimarc
 !
 version 15.2
 service timestamps debug datetime msec
@@ -284,21 +284,6 @@ vlan 1928
 vlan 1930
  name RIVER-PRO-VCMS
 !
-vlan 1932
- name RIVER-PRE-DBORA
-!
-vlan 1933
- name RIVER-PRE-DBSQL
-!
-vlan 1934
- name RIVER-PRO-DBORA
-!
-vlan 1935
- name RIVER-PRO-DBSQL
-!
-vlan 2705
- name DSF-TNS-LANx
-!
 ! 
 !
 !
@@ -395,7 +380,7 @@ banner motd ^C
  ###### #      #      #           #      #                     
  #    # #    # #    # #      #    # #    #                     
  #    #  ####   ####  ######  ####   ####                      
-                                                               
+                                         
 ^C
 !
 line con 0

@@ -1,5 +1,5 @@
 !! IOS XR Configuration 6.1.3
-!! Last configuration change at Mon Jan  8 09:31:01 2024 by palmierimarc
+!! Last configuration change at Mon Jan  8 11:18:10 2024 by palmierimarc
 !
 hostname ASR9K-01
 banner motd ^
@@ -152,6 +152,16 @@ router bgp 4203000210
    maximum-paths eibgp 4 selective
    redistribute connected
    redistribute static
+  !
+  neighbor 10.10.10.10
+   remote-as 65191
+   address-family ipv4 unicast
+    send-community-ebgp
+    multipath
+    route-policy PASS-ALL in
+    route-policy PASS-DEFAULT out
+    soft-reconfiguration inbound
+   !
   !
   neighbor 10.207.114.10
    remote-as 4203000210
