@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 5786 bytes
+Current configuration : 5771 bytes
 !
-! Last configuration change at 18:52:26 CET Fri Jan 5 2024 by palmierimarc
+! Last configuration change at 10:17:13 CET Mon Jan 8 2024
 !
 version 15.2
 service timestamps debug datetime msec
@@ -379,7 +379,7 @@ access-list 40 permit 10.207.195.0 0.0.0.255
 !
 control-plane
 !
-banner motd ^C
+banner motd ^CC
          <<Mi raccomando, non dobbiamo sporcare....>>
          _____    /
         /  _/\\  /

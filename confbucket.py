@@ -34,6 +34,8 @@ def load_login_info(file):
         credentials = {
             "USERNAME": os.getenv("USERNAME"),
             "PASSWORD": os.getenv("PASSWORD"),
+            "GIT_SYNC": os.getenv("GIT_SYNC"),
+            "GIT_SYNC_TYPE": os.getenv("GIT_SYNC_TYPE"),
             "GIT_TOKEN": os.getenv("GIT_TOKEN"),
         }
         return credentials
@@ -106,7 +108,7 @@ def colored_yellow(text):
 ### Git functions ###
 
 
-def load_git_info(folder):
+def load_git_info_ssh(folder):
     """function to load git info from .git folder"""
     if os.path.isdir(folder) == True:
         global now
@@ -121,10 +123,28 @@ def load_git_info(folder):
         repo_token = credentials.get("GIT_TOKEN")
         repo_folder = "."
         repo = Repo(repo_folder)
-        # if you want to use https token invert following commented lines
-        # repo_url = repo.remotes.origin.url.split("https://")[1]
-        # repo_token_url = "https://" + repo_token + "@github.com/" + repo_url
         repo_token_url = repo.remotes.origin.url
+    else:
+        pass
+
+
+def load_git_info_https(folder):
+    """function to load git info from .git folder and create URL with API token"""
+    if os.path.isdir(folder) == True:
+        global now
+        global commit_message
+        global repo_token
+        global repo_folder
+        global repo
+        global repo_url
+        global repo_token_url
+        now = datetime.now().isoformat("@", "seconds")
+        commit_message = "backup " + str(now)
+        repo_token = credentials.get("GIT_TOKEN")
+        repo_folder = "."
+        repo = Repo(repo_folder)
+        repo_url = repo.remotes.origin.url.split("https://")[1]
+        repo_token_url = "https://" + repo_token + "@github.com/" + repo_url
     else:
         pass
 
@@ -291,8 +311,13 @@ credentials = load_login_info(".env")
 # use default login info or override with specific
 devices = change_login_info(devices)
 
-# if .git folder exist load parameters
-load_git_info(".git")
+# if .git folder exist load parameters based on GIT_SYNC_TYPE variable:
+if credentials.get("GIT_SYNC_TYPE") == "ssh":
+    load_git_info_ssh(".git")
+elif credentials.get("GIT_SYNC_TYPE") == "https":
+    load_git_info_https(".git")
+else:
+    pass
 
 # connect to the device w/ netmiko
 for device in devices:
@@ -313,8 +338,8 @@ for device in devices:
 
 print("\n")
 
-# connect to the device w/ netmiko
-if credentials.get("GIT_TOKEN") != "" and os.path.isdir(".git"):
+# commit configurations on git if GIT_SYNC variable is yes
+if credentials.get("GIT_SYNC") == "yes":
     colored_yellow("Working on git repo...")
     git_push(repo, commit_message, repo_token_url)
 else:
