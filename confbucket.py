@@ -22,13 +22,14 @@ def backup_folder(folder):
         os.makedirs(folder)
         colored_green("backup folder: created")
     except FileExistsError:
-        colored_yellow("backup folder: already exists")
+        colored_yellow("backup folder: present")
 
 
 def load_login_info(file):
     """function to load login info from .env file or from environment variables"""
     if os.path.exists(file) == True:
         credentials = dotenv_values(file)
+        colored_yellow("credentials: loaded")
         return credentials
     else:
         credentials = {
@@ -46,6 +47,7 @@ def yaml_to_json(file):
     with open(file, "r", encoding="utf8") as stream:
         try:
             parsed_yaml = yaml.safe_load(stream)
+            colored_yellow("inventory: loaded")
             return parsed_yaml
         except yaml.YAMLError as exc:
             print(exc)
@@ -56,6 +58,7 @@ def xls_to_json(file):
     try:
         df = pd.read_excel(file).replace(np.nan, None)
         parsed_xls = df.to_dict("records")
+        colored_yellow("inventory: loaded")
         return parsed_xls
     except Exception as e:
         print(e)
@@ -88,6 +91,7 @@ def clear_summary_report():
     """Function to clear log file"""
     with open("summary.log", "w", encoding="utf8") as summary_file:
         summary_file.close()
+        colored_yellow("summary.log: cleared")
 
 
 def colored_green(text):
@@ -124,6 +128,7 @@ def load_git_info_ssh(folder):
         repo_folder = "."
         repo = Repo(repo_folder)
         repo_token_url = repo.remotes.origin.url
+        colored_yellow("git info: loaded")
     else:
         pass
 
@@ -145,6 +150,7 @@ def load_git_info_https(folder):
         repo = Repo(repo_folder)
         repo_url = repo.remotes.origin.url.split("https://")[1]
         repo_token_url = "https://" + repo_token + "@github.com/" + repo_url
+        colored_yellow("git info: loaded")
     else:
         pass
 
@@ -292,8 +298,8 @@ def backup_bigip(net_device):
 
 ########################
 
-
-print(Style.BRIGHT + "\n*** RUNNING ***" + Style.RESET_ALL)
+# start data provisioning
+print(Style.BRIGHT + "\n*** PROVISIONING ***" + Style.RESET_ALL)
 
 # clear summary.log file
 clear_summary_report()
@@ -319,6 +325,10 @@ elif credentials.get("GIT_SYNC_TYPE") == "https":
 else:
     pass
 
+
+# start backup configs
+print(Style.BRIGHT + "\n*** GET DEVICES CONFIGURATIONS ***" + Style.RESET_ALL)
+
 # connect to the device w/ netmiko
 for device in devices:
     if device["device_type"] == "cisco_ios":
@@ -338,9 +348,12 @@ for device in devices:
 
 print("\n")
 
+# start commit git
+print(Style.BRIGHT + "\n*** GIT REMOTE SYNC ***" + Style.RESET_ALL)
+
 # commit configurations on git if GIT_SYNC variable is yes
 if credentials.get("GIT_SYNC") == "yes":
-    colored_yellow("Working on git repo...")
+    #colored_yellow("Working on git repo...")
     git_push(repo, commit_message, repo_token_url)
 else:
     pass
