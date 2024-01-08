@@ -165,7 +165,7 @@ def git_push(local_repo, msg, repourl_w_token):
         # local_repo.git.push
         colored_green("Committed")
     except GitCommandError:
-        print("nothing to commit, working tree clean")
+        print("Nothing to commit")
     except Exception as e:
         # decomment to debug
         # print(e)
