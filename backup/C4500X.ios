@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 6082 bytes
+Current configuration : 6276 bytes
 !
-! Last configuration change at 12:19:32 CET Mon Jan 8 2024 by palmierimarc
+! Last configuration change at 14:44:34 CET Wed Jan 10 2024
 !
 version 15.2
 service timestamps debug datetime msec
@@ -18,6 +18,7 @@ boot-end-marker
 !
 !
 username palmierimarc privilege 15 secret 5 $1$ly/5$p8h4CaLiKeNwmdVdeT6K00
+username confbucket privilege 15 secret 5 $1$D9cv$F1HoxzLfHVYctINZpAuRd/
 no aaa new-model
 clock timezone CET 1 0
 clock summer-time CEST recurring last Sun Mar 2:00 last Sun Oct 2:00
@@ -283,6 +284,18 @@ vlan 1928
 !
 vlan 1930
  name RIVER-PRO-VCMS
+!
+vlan 1932
+ name RIVER-PRE-DBORA
+!
+vlan 1933
+ name RIVER-PRE-DBSQL
+!
+vlan 1934
+ name RIVER-PRO-DBORA
+!
+vlan 1935
+ name RIVER-PRO-DBSQL
 !
 ! 
 !

@@ -30,6 +30,8 @@ logging level ospf 6
 username admin password 5 $5$Otc7T0NC$K.ulnSZnSyXLrTGNBdtLgZJXEa8EeNx.BrdZ98XyK2C  role network-admin
 username palmierimarc password 5 $5$DejYsCK1$ZKzaP0.0Ngc7wyWi.gPbboVenNHhQ.fFxMjrbl10Hg0  role network-admin
 username palmierimarc passphrase  lifetime 99999 warntime 14 gracetime 3
+username confbucket password 5 $5$kV0gHPQ3$zGaEV1upM3QVdGICX45z7tuP85.DU2VQISkVvQDSZ2B  role network-admin
+username confbucket passphrase  lifetime 99999 warntime 14 gracetime 3
 no password strength-check
 
 banner motd ^
@@ -98,6 +100,7 @@ ip access-list VTY-ACL
   330 permit ip 10.213.112.15/32 any 
   340 permit ip 10.213.72.64/26 any 
 copp profile strict
+snmp-server user confbucket network-admin auth md5 0xbee6eb35a5c9b35cdfab53b0ab29ef2d priv 0xbee6eb35a5c9b35cdfab53b0ab29ef2d localizedkey
 snmp-server user palmierimarc network-admin auth md5 0x1833a7870a24dc2a1dd73228e3241a2c priv 0x1833a7870a24dc2a1dd73228e3241a2c localizedkey
 snmp-server user admin auth md5 0x328945d53e05e8e7207f8c20b142f0b7 priv 0x328945d53e05e8e7207f8c20b142f0b7 localizedkey engineID 128:0:0:9:3:0:0:0:0:0:0
 rmon event 1 log description FATAL(1) owner PMON@FATAL
@@ -108,7 +111,7 @@ rmon event 5 log description INFORMATION(5) owner PMON@INFO
 snmp-server enable traps link
 snmp-server enable traps link cisco-xcvr-mon-status-chg
 
-vlan 1,101,563,589,595,700,810,900,903,999,1413,2301,2311-2326,2335-2340
+vlan 1,101,563,589,595,700,810,900,903,999,1413,2301,2311-2326,2335-2343
 vlan 101
   name TRANSIT-P2P-OSPF
 vlan 563
@@ -175,6 +178,10 @@ vlan 2339
   name BB-DR-TESTPLANT-EROGAZIONE
 vlan 2340
   name BB-DR-TESTPLANT-INTERFORZE
+vlan 2341
+  name BB-DR-TESTPLANT-SECURITY
+vlan 2342
+  name BB-DR-TESTPLANT-BACKEND
 
 ip prefix-list BARDOT-DR seq 5 permit 93.62.74.112/28 
 ip prefix-list MSG-MARE-CORE1-PREFIX-LIST seq 5 permit 10.213.255.230/32 
@@ -188,8 +195,10 @@ ip prefix-list OSPF_OK seq 230 permit 10.240.211.0/24
 ip prefix-list OSPF_OK seq 235 permit 10.240.212.0/24 
 ip prefix-list OSPF_OK seq 435 permit 78.7.73.128/26 
 ip prefix-list OSPF_OK seq 470 permit 10.67.0.0/18 
-ip prefix-list OSPF_OK seq 475 permit 0.0.0.0/2 
+ip prefix-list OSPF_OK seq 475 permit 10.67.65.0/25 
 ip prefix-list OSPF_OK seq 480 permit 10.72.255.79/32 
+ip prefix-list OSPF_OK seq 485 permit 10.72.255.80/32 
+ip prefix-list OSPF_OK seq 490 permit 10.73.83.0/26 
 ip prefix-list OSPF_OK seq 495 permit 10.73.83.64/26 
 ip prefix-list OSPF_OK seq 500 permit 10.73.82.0/24 
 ip prefix-list OSPF_OK seq 505 permit 10.73.0.0/16 
@@ -226,15 +235,46 @@ ip prefix-list OSPF_OK seq 1010 permit 10.73.0.0/17
 ip prefix-list OSPF_OK seq 1035 permit 92.223.225.107/32 
 ip prefix-list OSPF_OK seq 1170 permit 10.39.15.0/24 
 ip prefix-list OSPF_OK seq 1175 permit 10.39.17.0/24 
+ip prefix-list OSPF_OK seq 1190 permit 192.168.0.0/16 
+ip prefix-list OSPF_OK seq 1195 permit 10.240.0.0/16 
+ip prefix-list OSPF_OK seq 1205 permit 10.208.25.0/24 
+ip prefix-list OSPF_OK seq 1230 permit 10.207.12.0/28 
+ip prefix-list OSPF_OK seq 1240 permit 10.240.152.0/21 
+ip prefix-list OSPF_OK seq 1245 permit 192.168.160.0/21 
+ip prefix-list OSPF_OK seq 1275 permit 192.168.18.0/24 
+ip prefix-list OSPF_OK seq 1280 permit 192.168.67.0/24 
+ip prefix-list OSPF_OK seq 1285 permit 10.240.128.0/20 
+ip prefix-list OSPF_OK seq 1590 permit 192.168.15.0/24 
+ip prefix-list OSPF_OK seq 1660 permit 10.213.151.0/25 
+ip prefix-list OSPF_OK seq 1665 permit 10.213.151.192/26 
+ip prefix-list OSPF_OK seq 1670 permit 10.213.153.0/25 
+ip prefix-list OSPF_OK seq 1675 permit 10.213.153.192/26 
+ip prefix-list OSPF_OK seq 1850 permit 10.213.150.112/28 
+ip prefix-list OSPF_OK seq 1855 permit 10.213.150.64/28 
 ip prefix-list OSPF_OK seq 1865 permit 10.213.152.128/26 
+ip prefix-list OSPF_OK seq 1870 permit 10.39.0.0/28 
+ip prefix-list OSPF_OK seq 1875 permit 10.213.152.0/23 
+ip prefix-list OSPF_OK seq 1880 permit 10.213.150.0/23 
+ip prefix-list OSPF_OK seq 1885 permit 10.213.150.0/27 
+ip prefix-list OSPF_OK seq 1890 permit 10.213.150.32/27 
 ip prefix-list OSPF_OK seq 1935 permit 10.213.30.0/23 
 ip prefix-list OSPF_OK seq 1945 permit 10.130.251.0/24 
+ip prefix-list OSPF_OK seq 1985 permit 10.213.75.0/24 
+ip prefix-list OSPF_OK seq 2010 permit 10.170.0.0/22 
+ip prefix-list OSPF_OK seq 2015 permit 10.214.201.0/24 
+ip prefix-list OSPF_OK seq 2020 permit 10.213.154.0/28 
+ip prefix-list OSPF_OK seq 2080 permit 10.170.10.128/25 
+ip prefix-list OSPF_OK seq 2085 permit 10.39.22.0/24 
+ip prefix-list OSPF_OK seq 2090 permit 10.39.247.0/24 
+ip prefix-list OSPF_OK seq 2105 permit 10.213.154.16/28 
 route-map DEFAULT permit 10
   set tag 10 
   set metric 6 
   set metric-type type-1
 route-map MSG-MARE-CORE1 permit 10
-route-map MSG-MARE-CORE1-ROUTE-MA permit 10
+route-map MSG-MARE-CORE1-ROUTE-MAP permit 10
+  match ip address prefix-list MSG-MARE-CORE1-PREFIX-LIST 
+route-map STATIC-TO-OSPF permit 10
   match ip address prefix-list OSPF_OK 
   set metric-type type-1
 route-map STATIC-TO-OSPF permit 20
